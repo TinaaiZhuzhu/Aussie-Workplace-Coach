@@ -1,0 +1,6 @@
+.aussie-config.json
+.openai-key.secure
+.env
+.env.*
+!.env.example
+.git

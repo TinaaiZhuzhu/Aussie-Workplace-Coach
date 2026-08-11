@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "sessions": [],
+  "expressions": [
+    {
+      "id": "expr-conscious-time",
+      "expression": "Just conscious of time, ...",
+      "pattern": "Just conscious of [constraint], ...",
+      "category": "Meeting Facilitation",
+      "context": "Managing time diplomatically",
+      "example": "Just conscious of time, could we land on a decision?",
+      "whyUseful": "Signals a constraint without sounding abrupt.",
+      "dateLearned": "2026-08-11",
+      "sourceSessionId": "starter",
+      "status": "NEW"
+    }
+  ],
+  "metadata": [{"expressionId":"expr-conscious-time","practiceCount":0,"successfulSpontaneousUses":0,"contextsUsed":[],"commonMistakes":[],"lastPractisedAt":null,"needsPractice":true,"evidence":[]}],
+  "daily": {},
+  "weekly": {}
+}
