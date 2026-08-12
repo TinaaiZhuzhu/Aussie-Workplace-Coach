@@ -24,6 +24,8 @@ The `api/` directory contains Vercel Functions for authentication checks, OpenAI
 
 Never commit `.aussie-config.json`, `.openai-key.secure`, `.env`, or a Supabase secret/service-role key. After deployment, add the exact HTTPS production origin to Supabase Authentication URL Configuration as the Site URL and an allowed Redirect URL.
 
+For a learning-oriented explanation of the complete login setup, see `LOGIN-AUTHENTICATION-GUIDE.md`.
+
 ## iPhone / installed PWA limitations
 
 - Microphone access requires HTTPS, explicit permission and a user gesture.
