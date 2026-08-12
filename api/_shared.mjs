@@ -1,6 +1,7 @@
 const supabaseUrl = process.env.SUPABASE_URL?.replace(/\/$/, '');
 const supabasePublishableKey = process.env.SUPABASE_PUBLISHABLE_KEY;
 const allowedEmails = new Set((process.env.ALLOWED_EMAILS || '').split(',').map(email => email.trim().toLowerCase()).filter(Boolean));
+const unlimitedEmails = new Set((process.env.UNLIMITED_EMAILS || '').split(',').map(email => email.trim().toLowerCase()).filter(Boolean));
 const registrationMode = process.env.REGISTRATION_MODE === 'public' ? 'public' : 'private';
 
 export function sendJson(res, status, value) {
@@ -47,6 +48,7 @@ export async function trackUsage(req, user, feature, model) {
 }
 
 export async function enforceDailyLimit(req, res, user, feature, limit) {
+  if (unlimitedEmails.has(String(user?.email || '').trim().toLowerCase())) return true;
   if (!supabaseUrl || !supabasePublishableKey || !user?.id) return true;
   const start = new Date();
   start.setUTCHours(0, 0, 0, 0);

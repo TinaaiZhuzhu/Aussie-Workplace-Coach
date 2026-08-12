@@ -20,6 +20,7 @@ The `api/` directory contains Vercel Functions for authentication checks, OpenAI
 - `SUPABASE_URL`
 - `SUPABASE_PUBLISHABLE_KEY`
 - `ALLOWED_EMAILS`
+- `UNLIMITED_EMAILS` (server-only comma-separated emails that bypass daily AI limits)
 - `REGISTRATION_MODE` (`public` enables self-service email/password registration)
 
 Never commit `.aussie-config.json`, `.openai-key.secure`, `.env`, or a Supabase secret/service-role key. After deployment, add the exact HTTPS production origin to Supabase Authentication URL Configuration as the Site URL and an allowed Redirect URL.

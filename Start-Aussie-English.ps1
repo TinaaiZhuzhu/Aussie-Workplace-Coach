@@ -17,6 +17,7 @@ try {
     $env:SUPABASE_URL = $supabaseUrlInput.TrimEnd('/')
     $env:SUPABASE_PUBLISHABLE_KEY = $supabaseKeyInput
     $env:ALLOWED_EMAILS = $allowedEmailInput.Trim().ToLowerInvariant()
+    $env:UNLIMITED_EMAILS = $allowedEmailInput.Trim().ToLowerInvariant()
     $env:REGISTRATION_MODE = "public"
     if (-not (Test-Path -LiteralPath $keyPath)) { $secureApiKey | ConvertFrom-SecureString | Set-Content -LiteralPath $keyPath -Encoding ascii }
     if (-not $savedConfig) { [pscustomobject]@{supabaseUrl=$env:SUPABASE_URL;supabasePublishableKey=$env:SUPABASE_PUBLISHABLE_KEY;allowedEmail=$env:ALLOWED_EMAILS} | ConvertTo-Json | Set-Content -LiteralPath $configPath -Encoding utf8 }
@@ -70,5 +71,6 @@ finally {
     Remove-Item Env:SUPABASE_URL -ErrorAction SilentlyContinue
     Remove-Item Env:SUPABASE_PUBLISHABLE_KEY -ErrorAction SilentlyContinue
     Remove-Item Env:ALLOWED_EMAILS -ErrorAction SilentlyContinue
+    Remove-Item Env:UNLIMITED_EMAILS -ErrorAction SilentlyContinue
     Remove-Item Env:REGISTRATION_MODE -ErrorAction SilentlyContinue
 }

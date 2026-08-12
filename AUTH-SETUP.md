@@ -17,7 +17,7 @@ The first successful sign-in securely migrates existing device-local learning da
 
 Set `REGISTRATION_MODE=public` in Vercel. Anyone can create an account, verify their email once, and then sign in with their password on any device. No database migration or allowlist update is needed. Every table already uses `user_id`, and Row Level Security restricts each person to their own rows.
 
-The server enforces initial daily limits per user: 8 voice sessions, 12 coaching analyses, and 30 quick rewrites. These can be revised in `api/` after observing real usage.
+The server enforces initial daily limits per user: 8 voice sessions, 12 coaching analyses, and 30 quick rewrites. Emails listed in the server-only `UNLIMITED_EMAILS` variable bypass these limits. Usage events are still recorded for monitoring.
 
 ## Production environment variables
 
@@ -26,6 +26,7 @@ The server enforces initial daily limits per user: 8 voice sessions, 12 coaching
 - `SUPABASE_PUBLISHABLE_KEY` — intended for browser use; access is constrained by Auth and RLS
 - `REGISTRATION_MODE` — set to `public` for self-service registration; otherwise the server uses `ALLOWED_EMAILS`
 - `ALLOWED_EMAILS` — optional private-mode comma-separated allowlist
+- `UNLIMITED_EMAILS` — optional server-only comma-separated emails that bypass daily AI limits
 - `PORT` — optional; defaults to `3000`
 
 Never configure a Supabase service-role key in this application or expose one to the browser.

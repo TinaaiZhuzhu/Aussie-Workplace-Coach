@@ -48,6 +48,7 @@ Open **Vercel project -> Settings -> Environment Variables**:
 | `SUPABASE_PUBLISHABLE_KEY` | Browser-safe key constrained by Auth and RLS. |
 | `REGISTRATION_MODE` | Set to `public` for self-service account creation. |
 | `ALLOWED_EMAILS` | Optional server-only allowlist used in private mode. |
+| `UNLIMITED_EMAILS` | Optional server-only list of emails that bypass per-user daily AI limits. |
 
 Apply variables to Production and, when needed, Preview and Development. Redeploy after changing them.
 
@@ -234,4 +235,3 @@ Local code -> Git commit -> GitHub main -> automatic Vercel deployment
 - Auth providers, URLs, SMTP, templates, and users: Supabase.
 - Sender identity, SMTP credentials, and delivery reports: Brevo.
 - DNS records: Vercel, because it manages the domain.
-
