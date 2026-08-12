@@ -1,6 +1,7 @@
 const supabaseUrl = process.env.SUPABASE_URL?.replace(/\/$/, '');
 const supabasePublishableKey = process.env.SUPABASE_PUBLISHABLE_KEY;
 const allowedEmails = new Set((process.env.ALLOWED_EMAILS || '').split(',').map(email => email.trim().toLowerCase()).filter(Boolean));
+const registrationMode = process.env.REGISTRATION_MODE === 'public' ? 'public' : 'private';
 
 export function sendJson(res, status, value) {
   res.status(status).setHeader('Cache-Control', 'no-store').json(value);
@@ -25,7 +26,7 @@ export async function authenticate(req) {
   });
   if (!response.ok) return { status: 401 };
   const user = await response.json();
-  if (!allowedEmails.has(String(user.email || '').toLowerCase())) return { status: 403, user };
+  if (registrationMode !== 'public' && !allowedEmails.has(String(user.email || '').toLowerCase())) return { status: 403, user };
   return { status: 200, user };
 }
 
@@ -45,8 +46,21 @@ export async function trackUsage(req, user, feature, model) {
   }).catch(() => {});
 }
 
+export async function enforceDailyLimit(req, res, user, feature, limit) {
+  if (!supabaseUrl || !supabasePublishableKey || !user?.id) return true;
+  const start = new Date();
+  start.setUTCHours(0, 0, 0, 0);
+  const query = new URLSearchParams({ user_id: `eq.${user.id}`, feature: `eq.${feature}`, created_at: `gte.${start.toISOString()}`, select: 'id' });
+  const response = await fetch(`${supabaseUrl}/rest/v1/usage_events?${query}`, { headers: { Authorization: req.headers.authorization, apikey: supabasePublishableKey } });
+  if (!response.ok) return true;
+  const events = await response.json();
+  if (events.length < limit) return true;
+  sendJson(res, 429, { error: `Daily ${feature.replaceAll('_', ' ')} limit reached. Try again tomorrow.` });
+  return false;
+}
+
 export function publicConfig() {
-  return { supabaseUrl, supabasePublishableKey };
+  return { supabaseUrl, supabasePublishableKey, registrationMode };
 }
 
 export function coachInstructions(req) {
@@ -91,4 +105,3 @@ export function extractResponseText(output) {
 }
 
 export function openAiKey() { return process.env.OPENAI_API_KEY; }
-

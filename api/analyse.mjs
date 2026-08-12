@@ -1,8 +1,9 @@
-import { analysisPrompt, extractResponseText, openAiKey, readBody, requireUser, sendJson, trackUsage } from './_shared.mjs';
+import { analysisPrompt, enforceDailyLimit, extractResponseText, openAiKey, readBody, requireUser, sendJson, trackUsage } from './_shared.mjs';
 export default async function handler(req, res) {
   if (req.method !== 'POST') return sendJson(res, 405, { error: 'Method not allowed' });
   const user = await requireUser(req, res);
   if (!user) return;
+  if (!await enforceDailyLimit(req, res, user, 'session_analysis', 12)) return;
   const key = openAiKey();
   if (!key) return sendJson(res, 503, { error: 'OPENAI_API_KEY is not configured on the server.' });
   const payload = JSON.parse((await readBody(req)).toString());
@@ -12,4 +13,3 @@ export default async function handler(req, res) {
   if (!response.ok) return sendJson(res, response.status, { error: output.error?.message || 'Analysis failed' });
   return sendJson(res, 200, JSON.parse(extractResponseText(output)));
 }
-

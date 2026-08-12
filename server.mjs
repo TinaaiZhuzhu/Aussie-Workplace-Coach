@@ -9,6 +9,7 @@ const key = process.env.OPENAI_API_KEY;
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabasePublishableKey = process.env.SUPABASE_PUBLISHABLE_KEY;
 const allowedEmails = new Set((process.env.ALLOWED_EMAILS || '').split(',').map((email) => email.trim().toLowerCase()).filter(Boolean));
+const registrationMode = process.env.REGISTRATION_MODE === 'public' ? 'public' : 'private';
 const types = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -36,7 +37,7 @@ async function authenticate(req) {
   });
   if (!response.ok) return null;
   const user = await response.json();
-  return allowedEmails.has(String(user.email || '').toLowerCase()) ? user : { ...user, denied: true };
+  return registrationMode === 'public' || allowedEmails.has(String(user.email || '').toLowerCase()) ? user : { ...user, denied: true };
 }
 
 async function trackUsage(req, user, feature, model) {
@@ -101,7 +102,7 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'GET' && req.url === '/api/config') {
       if (!supabaseUrl || !supabasePublishableKey) return json(res, 503, { error: 'Authentication is not configured.' });
-      return json(res, 200, { supabaseUrl, supabasePublishableKey });
+      return json(res, 200, { supabaseUrl, supabasePublishableKey, registrationMode });
     }
 
     let authenticatedUser = null;
